@@ -20,7 +20,7 @@ export default function htmlTemplate(options = {}) {
 
     async generateBundle(outputOptions, bundleInfo) {
       const targetDir = outputOptions.dir || path.dirname(outputOptions.file);
-      const bundles = getEntryPoints(bundleInfo);
+      // const bundles = getEntryPoints(bundleInfo);
       const bundleKeys = Object.keys(bundleInfo);
       return new Promise(async (resolve, reject) => {
         try {
@@ -47,7 +47,7 @@ export default function htmlTemplate(options = {}) {
             });
           }
 
-          let injected = tmpl
+          let injected = tmpl;
 
           // Inject the style tags before the head close tag
           const headCloseTag = injected.lastIndexOf("</head>");
@@ -55,10 +55,13 @@ export default function htmlTemplate(options = {}) {
           // Inject the script tags before the body close tag
           injected = [
             injected.slice(0, headCloseTag),
-            ...bundleKeys.filter(f => path.extname(f) === '.css').map(
-              b =>
-                `<link rel="stylesheet" type="text/css" href="${prefix || ""}${b}">\n`
-            ),
+            ...bundleKeys
+              .filter(f => path.extname(f) === ".css")
+              .map(
+                b =>
+                  `<link rel="stylesheet" type="text/css" href="${prefix ||
+                    ""}${b}">\n`
+              ),
             injected.slice(headCloseTag, injected.length),
           ].join("");
 
@@ -67,11 +70,13 @@ export default function htmlTemplate(options = {}) {
           // Inject the script tags before the body close tag
           injected = [
             injected.slice(0, bodyCloseTag),
-            ...bundleKeys.filter(f => path.extname(f) === '.js').map(
-              b =>
-                `<script ${scriptTagAttributes.join(" ")} src="${prefix ||
-                  ""}${b}"></script>\n`
-            ),
+            ...bundleKeys
+              .filter(f => path.extname(f) === ".js")
+              .map(
+                b =>
+                  `<script ${scriptTagAttributes.join(" ")} src="${prefix ||
+                    ""}${b}"></script>\n`
+              ),
             injected.slice(bodyCloseTag, injected.length),
           ].join("");
 
